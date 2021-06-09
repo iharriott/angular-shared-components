@@ -1,0 +1,214 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "shared-table": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "projects/shared-table",
+      "sourceRoot": "projects/shared-table/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/shared-table",
+            "index": "projects/shared-table/src/index.html",
+            "main": "projects/shared-table/src/main.ts",
+            "polyfills": "projects/shared-table/src/polyfills.ts",
+            "tsConfig": "projects/shared-table/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/shared-table/src/favicon.ico",
+              "projects/shared-table/src/assets"
+            ],
+            "styles": [
+              "projects/shared-table/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/shared-table/src/environments/environment.ts",
+                  "with": "projects/shared-table/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "shared-table:build:production"
+            },
+            "development": {
+              "browserTarget": "shared-table:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "shared-table:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/shared-table/src/test.ts",
+            "polyfills": "projects/shared-table/src/polyfills.ts",
+            "tsConfig": "projects/shared-table/tsconfig.spec.json",
+            "karmaConfig": "projects/shared-table/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/shared-table/src/favicon.ico",
+              "projects/shared-table/src/assets"
+            ],
+            "styles": [
+              "projects/shared-table/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    },
+    "shared-form": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "projects/shared-form",
+      "sourceRoot": "projects/shared-form/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/shared-form",
+            "index": "projects/shared-form/src/index.html",
+            "main": "projects/shared-form/src/main.ts",
+            "polyfills": "projects/shared-form/src/polyfills.ts",
+            "tsConfig": "projects/shared-form/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/shared-form/src/favicon.ico",
+              "projects/shared-form/src/assets"
+            ],
+            "styles": [
+              "projects/shared-form/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/shared-form/src/environments/environment.ts",
+                  "with": "projects/shared-form/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "shared-form:build:production"
+            },
+            "development": {
+              "browserTarget": "shared-form:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "shared-form:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/shared-form/src/test.ts",
+            "polyfills": "projects/shared-form/src/polyfills.ts",
+            "tsConfig": "projects/shared-form/tsconfig.spec.json",
+            "karmaConfig": "projects/shared-form/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/shared-form/src/favicon.ico",
+              "projects/shared-form/src/assets"
+            ],
+            "styles": [
+              "projects/shared-form/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "shared-table"
+}
