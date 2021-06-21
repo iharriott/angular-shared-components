@@ -85,24 +85,6 @@
           "options": {
             "browserTarget": "shared-table:build"
           }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/shared-table/src/test.ts",
-            "polyfills": "projects/shared-table/src/polyfills.ts",
-            "tsConfig": "projects/shared-table/tsconfig.spec.json",
-            "karmaConfig": "projects/shared-table/karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/shared-table/src/favicon.ico",
-              "projects/shared-table/src/assets"
-            ],
-            "styles": [
-              "projects/shared-table/src/styles.scss"
-            ],
-            "scripts": []
-          }
         }
       }
     },
@@ -187,24 +169,6 @@
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "shared-form:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/shared-form/src/test.ts",
-            "polyfills": "projects/shared-form/src/polyfills.ts",
-            "tsConfig": "projects/shared-form/tsconfig.spec.json",
-            "karmaConfig": "projects/shared-form/karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/shared-form/src/favicon.ico",
-              "projects/shared-form/src/assets"
-            ],
-            "styles": [
-              "projects/shared-form/src/styles.scss"
-            ],
-            "scripts": []
           }
         }
       }
