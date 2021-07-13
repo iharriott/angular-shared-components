@@ -1,0 +1,539 @@
+<ng-container
+  *ngIf='!compConfig?.options?.isError; else errorTemplate'>
+  <ng-container
+    *ngIf='compConfig?.options?.isReady;
+        then formsTemplate else ghostTemplate'>
+  </ng-container>
+</ng-container>
+
+<ng-template #formsTemplate>
+  <ng-container [formGroup]='ngFormGroup'>
+    <ng-container
+      formArrayName='ngFormControls'
+      *ngFor="let ngControl of ngFormGroup?.controls['ngFormControls']['controls'];
+                    let ngControlIndex=index">
+      <ng-container [formGroupName]='ngControlIndex'>
+        <div
+          [ngClass]='ngControl?.get("groupClassName")?.value'
+          *ngIf="ngControl?.get('fieldConfigs')?.controls?.length > 0">
+          <ng-container
+            [ngSwitch]='ngControl?.get("templateType")?.value'>
+
+            <!--  Here goes the Custom Template -->
+
+            <ng-container *ngSwitchCase='templateType?.DEFAULT'>
+              <ng-container
+                formArrayName='fieldConfigs'
+                *ngFor="let configControl of ngControl?.get('fieldConfigs')?.controls;
+                    let controlIndex=index">
+                <ng-container [formGroupName]='controlIndex'>
+                  <ng-container
+                    [ngSwitch]='getConfig(configControl, controlIndex)?.fieldType'>
+
+                    <ng-container *ngSwitchCase='fieldType.INPUT'>
+                      <mat-form-field class='flex-100'>
+                        <mat-label
+                          *ngIf='getConfig(configControl, controlIndex)?.label'>
+                        <span
+                          [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                        </span>
+                        </mat-label>
+                        <input
+                          matInput
+                          [id]='getId(configControl, controlIndex)'
+                          [type]='getConfig(configControl, controlIndex)?.type'
+                          [tabIndex]='getConfig(configControl, controlIndex)?.sequence'
+                          formControlName='fieldControl'
+                          [errorStateMatcher]='$errorStateMatcher'
+                          [matTooltip]='getConfig(configControl, controlIndex)?.tooltip'>
+                        <mat-hint>
+                          {{getConfig(configControl, controlIndex)?.hint}}
+                        </mat-hint>
+                        <mat-error
+                          *ngIf='configControl?.get("fieldControl")?.errors'>
+                          {{getMessages(configControl, controlIndex)
+                          [(configControl?.get('fieldControl')?.errors| firstKey)]}}
+                        </mat-error>
+                      </mat-form-field>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase='fieldType.SELECT'>
+                      <mat-form-field>
+                        <mat-label
+                          *ngIf='getConfig(configControl, controlIndex)?.label'>
+                        <span
+                          [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                        </span>
+                        </mat-label>
+                        <mat-select
+                          [id]='getId(configControl, controlIndex)'
+                          [errorStateMatcher]='$errorStateMatcher'
+                          formControlName='fieldControl'>
+                          <mat-option
+                            [id]='getId(configControl, controlIndex)'
+                            *ngFor='let option of getOptions(configControl, controlIndex)'
+                            [value]='option?.value'>
+                              <span
+                                [id]='getId(configControl, controlIndex)'>
+                                {{option?.label }}
+                              </span>
+                          </mat-option>
+                        </mat-select>
+                        <mat-error
+                          *ngIf='configControl?.get("fieldControl")?.errors'>
+                          {{getMessages(configControl, controlIndex)
+                          [(configControl?.get('fieldControl')?.errors| firstKey)]}}
+                        </mat-error>
+                      </mat-form-field>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase='fieldType.TOGGLE'>
+                      <mat-label
+                        *ngIf='getConfig(configControl, controlIndex)?.label'>
+                        <span
+                          [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                        </span>
+                      </mat-label>
+                      <mat-slide-toggle
+                        [id]='getId(configControl, controlIndex)'
+                        formControlName='fieldControl'>
+                        <mat-error
+                          *ngIf='configControl?.get("fieldControl")?.errors'>
+                          {{getMessages(configControl, controlIndex)
+                          [(configControl?.get('fieldControl')?.errors| firstKey)]}}
+                        </mat-error>
+                      </mat-slide-toggle>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase='fieldType.RADIO'>
+                      <div>
+                        <mat-label
+                          *ngIf='getConfig(configControl, controlIndex)?.label'>
+                        <span
+                          [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                        </span>
+                        </mat-label>
+                        <mat-radio-group
+                          formControlName='fieldControl'
+                          [id]='getId(configControl, controlIndex)'>
+                          <mat-radio-button
+                            [class]='getConfig(configControl, controlIndex).className'
+                            *ngFor='let option of getOptions(configControl, controlIndex)'
+                            [value]='option?.value'>
+                           <span
+                             [id]='getId(configControl, controlIndex)'>
+                                {{option?.label }}
+                              </span>
+                          </mat-radio-button>
+                          <mat-error
+                            *ngIf='configControl?.get("fieldControl")?.errors'>
+                            {{getMessages(configControl, controlIndex)
+                            [(configControl?.get('fieldControl')?.errors| firstKey)]}}
+                          </mat-error>
+                        </mat-radio-group>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase='fieldType.INPUT_DATE'>
+                      <mat-form-field>
+                        <mat-label
+                          *ngIf='getConfig(configControl, controlIndex)?.label'>
+                        <span
+                          [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                        </span>
+                        </mat-label>
+                        <input
+                          matInput
+                          [matDatepicker]='date'
+                          (click)='date?.open()'
+                          formControlName='fieldControl' readonly
+                          autocomplete='disableAutoFill'
+                          [id]='getId(configControl, controlIndex)'
+                          [errorStateMatcher]='$errorStateMatcher'>
+                        <mat-datepicker-toggle
+                          matSuffix [for]='date'></mat-datepicker-toggle>
+                        <mat-datepicker #date></mat-datepicker>
+                        <mat-error
+                          *ngIf='configControl?.get("fieldControl")?.errors'>
+                          {{getMessages(configControl, controlIndex)
+                          [(configControl?.get('fieldControl')?.errors| firstKey)]}}
+                        </mat-error>
+                      </mat-form-field>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase='fieldType.CHECK_BOX'>
+                      <mat-label
+                        *ngIf='getConfig(configControl, controlIndex)?.label'>
+                        <span
+                          [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                        </span>
+                      </mat-label>
+                      <mat-checkbox
+                        formControlName='fieldControl'
+                        [id]='getId(configControl, controlIndex)'>
+                        <mat-error
+                          *ngIf='configControl?.get("fieldControl")?.errors'>
+                          {{getMessages(configControl, controlIndex)
+                          [(configControl?.get('fieldControl')?.errors| firstKey)]}}
+                        </mat-error>
+                      </mat-checkbox>
+                    </ng-container>
+
+                    <ng-container
+                      *ngSwitchCase='fieldType.BUTTON_TOGGLE'>
+                      <div class='row'>
+                        <mat-label
+                          *ngIf='getConfig(configControl, controlIndex)?.label'>
+                        <span
+                          [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                        </span>
+                        </mat-label>
+                        <mat-button-toggle-group
+                          [id]='getId(configControl, controlIndex)'
+                          formControlName='fieldControl'>
+                          <ng-container
+                            *ngFor='let option of getOptions(configControl, controlIndex)'>
+                            <mat-button-toggle
+                              [value]='option?.value'
+                              [id]='getId(configControl, controlIndex)'>
+                              {{option?.label}}
+                            </mat-button-toggle>
+                          </ng-container>
+                        </mat-button-toggle-group>
+                      </div>
+                    </ng-container>
+
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+
+            <!--  Here goes the Custom Template -->
+
+            <ng-container *ngSwitchCase='templateType?.CUSTOM'>
+              <ng-container
+                formArrayName='fieldConfigs'
+                *ngFor="let configControl of ngControl?.get('fieldConfigs')?.controls;
+                    let controlIndex=index">
+                <ng-container [formGroupName]='controlIndex'>
+                  <ng-container
+                    [ngSwitch]='getConfig(configControl, controlIndex)?.fieldType'>
+
+                    <ng-container *ngSwitchCase='fieldType.INPUT'>
+                      <div class='row'>
+                        <mat-label
+                          *ngIf='getConfig(configControl, controlIndex)?.label'
+                          class='label flex-15'>
+                          <span
+                            id='{{getId(configControl, controlIndex)}}'
+                            [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                          </span>
+                          <mat-icon
+                            *ngIf='getConfig(configControl, controlIndex)?.info'
+                            matTooltip='{{getConfig(configControl, controlIndex)?.info}}'
+                            matTooltipPosition='right'>
+                            info_outline
+                          </mat-icon>
+                        </mat-label>
+                        <mat-form-field class='flex-75'>
+                          <input
+                            matInput
+                            [id]='getId(configControl, controlIndex)'
+                            [type]='getConfig(configControl, controlIndex)?.type'
+                            [tabIndex]='getConfig(configControl, controlIndex)?.sequence'
+                            formControlName='fieldControl'
+                            [errorStateMatcher]='$errorStateMatcher'
+                            [matTooltip]='getConfig(configControl, controlIndex)?.tooltip'>
+                          <mat-hint>
+                            {{getConfig(configControl, controlIndex)?.hint}}
+                          </mat-hint>
+                          <mat-error
+                            *ngIf='configControl?.get("fieldControl")?.errors'>
+                            {{getMessages(configControl, controlIndex)
+                            [(configControl?.get('fieldControl')?.errors| firstKey)]}}
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase='fieldType.SELECT'>
+                      <div class='row'>
+                        <mat-label
+                          *ngIf='getConfig(configControl, controlIndex)?.label'
+                          class='label flex-15'>
+                          <span
+                            [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                          </span>
+                          <mat-icon
+                            *ngIf='getConfig(configControl, controlIndex)?.info'
+                            matTooltip='{{getConfig(configControl, controlIndex)?.info}}'
+                            matTooltipPosition='right'>
+                            info_outline
+                          </mat-icon>
+                        </mat-label>
+                        <mat-form-field class='flex-75'>
+                          <mat-label
+                            *ngIf='getConfig(configControl, controlIndex)?.label'>
+                        <span
+                          [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                        </span>
+                          </mat-label>
+                          <mat-select
+                            [id]='getId(configControl, controlIndex)'
+                            [errorStateMatcher]='$errorStateMatcher'
+                            formControlName='fieldControl'>
+                            <mat-option
+                              [id]='getId(configControl, controlIndex)'
+                              *ngFor='let option of getOptions(configControl, controlIndex)'
+                              [value]='option?.value'>
+                              <span
+                                [id]='getId(configControl, controlIndex)'>
+                                {{option?.label }}
+                              </span>
+                            </mat-option>
+                          </mat-select>
+                          <mat-error
+                            *ngIf='configControl?.get("fieldControl")?.errors'>
+                            {{getMessages(configControl, controlIndex)
+                            [(configControl?.get('fieldControl')?.errors| firstKey)]}}
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase='fieldType.TOGGLE'>
+                      <div class='row'>
+                        <mat-label
+                          *ngIf='getConfig(configControl, controlIndex)?.label'
+                          class='label flex-15'>
+                          <span
+                            [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                          </span>
+                          <mat-icon
+                            *ngIf='getConfig(configControl, controlIndex)?.info'
+                            matTooltip='{{getConfig(configControl, controlIndex)?.info}}'
+                            matTooltipPosition='right'>
+                            info_outline
+                          </mat-icon>
+                        </mat-label>
+                        <mat-slide-toggle
+                          [id]='getId(configControl, controlIndex)'
+                          class='flex-75'
+                          formControlName='fieldControl'>
+                          <mat-error
+                            *ngIf='configControl?.get("fieldControl")?.errors'>
+                            {{getMessages(configControl, controlIndex)
+                            [(configControl?.get('fieldControl')?.errors| firstKey)]}}
+                          </mat-error>
+                        </mat-slide-toggle>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase='fieldType.RADIO'>
+                      <div class='row'>
+                        <mat-label
+                          *ngIf='getConfig(configControl, controlIndex)?.label'
+                          class='label flex-15'>
+                          <span
+                            [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                          </span>
+                          <mat-icon
+                            *ngIf='getConfig(configControl, controlIndex)?.info'
+                            matTooltip='{{getConfig(configControl, controlIndex)?.info}}'
+                            matTooltipPosition='right'>
+                            info_outline
+                          </mat-icon>
+                        </mat-label>
+                        <mat-radio-group
+                          class='flex-75'
+                          formControlName='fieldControl'
+                          [id]='getId(configControl, controlIndex)'>
+                          <mat-radio-button
+                            [class]='getConfig(configControl, controlIndex)?.className'
+                            *ngFor='let option of getOptions(configControl, controlIndex)'
+                            [value]='option?.value'>
+                           <span [id]='getId(configControl, controlIndex)'>
+                                {{option?.label }}
+                              </span>
+                          </mat-radio-button>
+                          <mat-error
+                            *ngIf='configControl?.get("fieldControl")?.errors'>
+                            {{getMessages(configControl, controlIndex)
+                            [(configControl?.get('fieldControl')?.errors| firstKey)]}}
+                          </mat-error>
+                        </mat-radio-group>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase='fieldType.INPUT_DATE'>
+                      <div class='row'>
+                        <mat-label
+                          *ngIf='getConfig(configControl, controlIndex)?.label'
+                          class='label flex-15'>
+                          <span
+                            [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                          </span>
+                          <mat-icon
+                            *ngIf='getConfig(configControl, controlIndex)?.info'
+                            matTooltip='{{getConfig(configControl, controlIndex)?.info}}'
+                            matTooltipPosition='right'>
+                            info_outline
+                          </mat-icon>
+                        </mat-label>
+                        <mat-form-field class='flex-75'>
+                          <input
+                            matInput
+                            [matDatepicker]='date'
+                            (click)='date?.open()'
+                            formControlName='fieldControl' readonly
+                            autocomplete='disableAutoFill'
+                            [id]='getId(configControl, controlIndex)'
+                            [errorStateMatcher]='$errorStateMatcher'>
+                          <mat-datepicker-toggle
+                            matSuffix [for]='date'></mat-datepicker-toggle>
+                          <mat-datepicker #date></mat-datepicker>
+                          <mat-error
+                            *ngIf='configControl?.get("fieldControl")?.errors'>
+                            {{getMessages(configControl, controlIndex)
+                            [(configControl?.get('fieldControl')?.errors| firstKey)]}}
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase='fieldType.CHECK_BOX'>
+                      <div class='row'>
+                        <mat-label
+                          *ngIf='getConfig(configControl, controlIndex)?.label'
+                          class='label flex-15'>
+                          <span
+                            [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                          </span>
+                          <mat-icon
+                            *ngIf='getConfig(configControl, controlIndex)?.info'
+                            matTooltip='{{getConfig(configControl, controlIndex)?.info}}'
+                            matTooltipPosition='right'>
+                            info_outline
+                          </mat-icon>
+                        </mat-label>
+                        <mat-checkbox
+                          class='flex-75'
+                          formControlName='fieldControl'
+                          [id]='getId(configControl, controlIndex)'>
+                          <mat-error
+                            *ngIf='configControl?.get("fieldControl")?.errors'>
+                            {{getMessages(configControl, controlIndex)
+                            [(configControl?.get('fieldControl')?.errors| firstKey)]}}
+                          </mat-error>
+                        </mat-checkbox>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase='fieldType.BUTTON_TOGGLE'>
+                      <div class='row'>
+                        <mat-label
+                          *ngIf='getConfig(configControl, controlIndex)?.label'
+                          class='label flex-15'>
+                          <span
+                            [innerHTML]='getConfig(configControl, controlIndex)?.label'>
+                          </span>
+                          <mat-icon
+                            *ngIf='getConfig(configControl, controlIndex)?.info'
+                            matTooltip='{{getConfig(configControl, controlIndex)?.info}}'
+                            matTooltipPosition='right'>
+                            info_outline
+                          </mat-icon>
+                        </mat-label>
+                        <mat-button-toggle-group
+                          class='label'
+                          [id]='getId(configControl, controlIndex)'
+                          formControlName='fieldControl'>
+                          <ng-container
+                            *ngFor='let option of getOptions(configControl, controlIndex)'>
+                            <mat-button-toggle
+                              [value]='option?.value'
+                              [id]='getId(configControl, controlIndex)'>
+                              {{option?.label}}
+                            </mat-button-toggle>
+                          </ng-container>
+                        </mat-button-toggle-group>
+                      </div>
+                    </ng-container>
+
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<!-- FIXME - Revisit later-->
+<!--<ng-container [formGroupName]='controlIndex'>
+     {{controlFGA(configControl, controlIndex)}}
+     <ng-container
+       [ngTemplateOutlet]='templateType?.DEFAULT===getConfig(configControl, controlIndex)?.templateType?
+                           defaultTypeTemplate : customTypeTemplate'
+       [ngTemplateOutletContext]='{ctx:{
+                   control:getControl(configControl, controlIndex),
+                   config:getConfig(configControl, controlIndex)
+                   }}'>
+     </ng-container>
+   </ng-container>-->
+
+<!-- FIXME - Revisit later-->
+<!--
+<ng-template #defaultTypeTemplate let-ctx='ctx'>
+  <ng-container [ngSwitch]='ctx?.config?.fieldType'>
+    <ng-container *ngSwitchCase="'input'">
+      <mat-form-field>
+        <input matInput
+               [placeholder]='ctx?.config?.label'
+               [formControlName]='ctx?.control'
+               [id]='ctx?.config?.key'
+               [matTooltip]='ctx?.config?.tooltip'
+               [tabIndex]='ctx?.config?.sequence'
+               [type]='ctx?.config?.fieldType'>
+      </mat-form-field>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #customTypeTemplate let-ctx='ctx'>
+  <ng-container [ngSwitch]='ctx?.config?.fieldType'>
+    <ng-container *ngSwitchCase="'input'">
+      <mat-label class='' *ngIf='ctx?.config?.label'>
+        <span id='{{ctx?.config?.key}}' [innerHTML]='ctx?.config?.label'></span>
+        <mat-icon *ngIf='ctx?.config?.tooltip'
+                  class='info-icon'
+                  matTooltip='{{ctx?.config?.tooltip}}'
+                  matTooltipPosition='right'>
+          info_outline
+        </mat-icon>
+      </mat-label>
+      <mat-form-field>
+        <input matInput
+               [placeholder]='ctx?.config?.placeholder'
+               [id]='ctx?.config?.id'
+               [formControlName]='ctx?.control'
+               [tabIndex]='ctx?.config?.sequence'>
+      </mat-form-field>
+    </ng-container>
+  </ng-container>
+</ng-template>-->
+
+<ng-template #errorTemplate>
+  <div class='error'>
+    <mat-icon color='warn'>report_problem</mat-icon>
+    <p class='error-message'>An error occurred while loading data</p>
+    <a class='refresh' href='#' (click)='refresh()'>
+      Refresh
+    </a>
+  </div>
+</ng-template>
+
+<ng-template #ghostTemplate>
+</ng-template>
