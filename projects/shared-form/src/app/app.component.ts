@@ -1,11 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NgFormsConfig } from './app.model';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import {
   FieldConfig,
@@ -37,13 +32,9 @@ export class AppComponent implements OnInit {
 
   /**
    * Constructor
-   * @param formBuilder
-   * @param changeDetectorRef
    */
-  constructor(
-    private formBuilder: FormBuilder,
-    private changeDetectorRef: ChangeDetectorRef
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  constructor() {}
 
   /*** Start of Life Cycle Implementation ***/
 

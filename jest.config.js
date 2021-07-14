@@ -3,5 +3,6 @@ module.exports = {
   projects: [
     '<rootDir>/projects/shared-form',
     '<rootDir>/projects/shared-table',
+    '<rootDir>/projects/shared-nav',
   ],
 };

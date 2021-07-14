@@ -55,14 +55,14 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Constructor
-   * @param formBuilder
-   * @param changeDetectorRef
+   * @param _formBuilder
+   * @param _changeDetectorRef
    */
   constructor(
-    private formBuilder: FormBuilder,
-    private changeDetectorRef: ChangeDetectorRef
+    private _formBuilder: FormBuilder,
+    private _changeDetectorRef: ChangeDetectorRef
   ) {
-    this.ngFormGroup = this.formBuilder.group({});
+    this.ngFormGroup = this._formBuilder.group({});
   }
 
   /*** Start of Life Cycle Implementation ***/
@@ -86,7 +86,7 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
         .pipe(takeUntil(this.onDestroy$))
         .subscribe((changes: NgFormsInputConfig) => {
           changes && (this.compConfig = changes);
-          this.changeDetectorRef.detectChanges();
+          this._changeDetectorRef.detectChanges();
         });
   }
 
@@ -109,7 +109,7 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param index
    * @return FieldConfig
    */
-  getConfig(fg: FormGroup, index: number): FieldConfig {
+  getConfig(fg: FormGroup, _index?: number): FieldConfig {
     return fg.controls['fieldConfig'].value as FieldConfig;
   }
 
@@ -119,7 +119,7 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param index
    * @return FieldConfig
    */
-  getId(fg: FormGroup, index: number): string {
+  getId(fg: FormGroup, _index?: number): string {
     const cfg: FieldConfig = fg.controls['fieldConfig'].value as FieldConfig;
     return cfg.key + '_' + Math.random().toString(36).substr(2, 9);
   }
@@ -129,7 +129,7 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param fg
    * @param index
    */
-  getMessages(fg: FormGroup, index: number): any | null | undefined {
+  getMessages(fg: FormGroup, _index?: number): any | null | undefined {
     const cfg: FieldConfig = fg.controls['fieldConfig'].value as FieldConfig;
     if (
       cfg &&
@@ -147,7 +147,7 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param index
    * @return FieldConfig
    */
-  getOptions(fg: FormGroup, index: number): LabelValue[] | [] {
+  getOptions(fg: FormGroup, _index?: number): LabelValue[] | [] {
     const cfg: FieldConfig = fg.controls['fieldConfig'].value as FieldConfig;
     if (cfg && Array.isArray(cfg.options) && cfg.options?.length > 0) {
       const optObject: OptionObject | undefined = cfg.options.find(
@@ -213,7 +213,7 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @private
    */
   private initForm(): void {
-    this.ngFormGroup = this.formBuilder.group(
+    this.ngFormGroup = this._formBuilder.group(
       {
         ngFormControls: null,
       },
@@ -251,11 +251,11 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
     fieldGroups: FieldGroup[],
     fieldData?: any | null
   ): FormArray {
-    const formArray: FormArray = this.formBuilder.array([]);
+    const formArray: FormArray = this._formBuilder.array([]);
     if (fieldGroups) {
       fieldGroups.forEach((fieldGroup: FieldGroup) => {
         formArray.push(
-          this.formBuilder.group({
+          this._formBuilder.group({
             groupClassName: fieldGroup.fieldGroupClassName,
             templateType: fieldGroup.fieldTemplateType,
             fieldConfigs: this.constructFieldConfigFormArray(
@@ -280,10 +280,10 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
     fieldConfigs: FieldConfig[],
     fieldData?: any | null
   ): FormArray {
-    const formArray: FormArray = this.formBuilder.array([]);
-    fieldConfigs.forEach((cfg: FieldConfig, index: number) => {
+    const formArray: FormArray = this._formBuilder.array([]);
+    fieldConfigs.forEach((cfg: FieldConfig, _index?: number) => {
       formArray.push(
-        this.formBuilder.group({
+        this._formBuilder.group({
           fieldControl: [
             {
               value:
