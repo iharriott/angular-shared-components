@@ -1,0 +1,16 @@
+
+<app-atom-grid *ngIf="!drillReady && filtersLoaded" 
+[gridData]="gridData" 
+[gridState$]="listData$" (cellClicked)="dealSelected()"
+[detailsEvent]="'idDetail001'"
+[updateEvent]="'idUpdate001'"
+[deleteEvent]="'idDelete001'"
+(columnDataAction)="saveColumnData($event)" 
+(cellClicked)="onButtonClicked($event)"
+(checkboxDataAction)="onCheckboxData($event)"
+[showExport] ="true"
+[footerRow]="footerRow"
+[showCheckboxColumn]="false"
+[showSaveColumnData]="true"
+>
+</app-atom-grid>

@@ -1,0 +1,951 @@
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { DataDefinition } from '../atom-grid/atom-grid-data';
+import { GridState } from '../atom-grid/atom-grid.component';
+import { DcfColumn } from '../atom-grid/dcf-column.interface';
+import { FooterColumns } from '../atom-grid/footer-columns';
+import { FooterRowServiceService } from '../services/footer-row-service.service';
+import { Equipment } from './equipment';
+
+@Component({
+  selector: 'app-test-grid',
+  templateUrl: './test-grid.component.html',
+  styleUrls: ['./test-grid.component.css'],
+})
+export class TestGridComponent implements OnInit {
+  drillReady = false;
+  filtersLoaded = true;
+  hasSumColumns = true;
+  footerRow: { [index: string]: string } = {};
+  footerColumns!: FooterColumns[];
+  tableData2: Equipment[] = [];
+  tableData: Equipment[] = [
+    {
+      id: 1,
+      type: 'type1',
+      engineMC: 'engineMC1',
+      coolingMC: 'coolingMC1',
+      transMC: 'transMC1',
+      drivetrainMC: 'drivetrainMC1',
+      hydraulicMC: 'hydraulicMC1',
+      electricalMC: 'electricalMC1',
+      otherMC: 'otherMC1',
+      cost: 40,
+      discount: 5,
+    },
+    {
+      id: 2,
+      type: 'type2',
+      engineMC: 'engineMC2',
+      coolingMC: 'coolingMC2',
+      transMC: 'transMC2',
+      drivetrainMC: 'drivetrainMC2',
+      hydraulicMC: 'hydraulicMC2',
+      electricalMC: 'electricalMC2',
+      otherMC: 'otherMC2',
+      cost: 200,
+      discount: 20,
+    },
+    {
+      id: 3,
+      type: 'type3',
+      engineMC: 'engineMC3',
+      coolingMC: 'coolingMC3',
+      transMC: 'transMC3',
+      drivetrainMC: 'drivetrainMC3',
+      hydraulicMC: 'hydraulicMC3',
+      electricalMC: 'electricalMC3',
+      otherMC: 'otherMC3',
+      cost: 300,
+      discount: 60,
+    },
+  ];
+
+  listData$: BehaviorSubject<GridState> = new BehaviorSubject<GridState>({
+    isLoaded: true,
+    payload: this.tableData,
+  });
+  //public gridData: dataDefinition = this.GridData()[4004];
+
+  constructor(private footerRowService: FooterRowServiceService) {}
+
+  public gridData: DataDefinition = this.gridData2();
+
+  ngOnInit(): void {
+    this.hasSumColumns =
+      this.footerRowService.getFooterColumns(this.gridData.columns).length > 0;
+
+    if (this.hasSumColumns) {
+      this.footerRow = this.footerRowService.createFooterRow(
+        this.gridData.columns,
+        this.tableData
+      ) as { [index: string]: string };
+      console.log('my footer row ' + JSON.stringify(this.footerRow));
+    }
+
+    console.log(
+      `FOOTER ROW ${JSON.stringify(this.footerRow)} object keys = ${
+        Object.keys(this.footerRow).length
+      }`
+    );
+
+    console.log('gridData=' + this.gridData);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  dealSelected() {
+    //this.router.navigate(['coti/deal', saleId]);
+    console.log('the salesid is');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  saveColumnData(row: unknown): void {
+    const localRow = row as DcfColumn[];
+    console.log(
+      localRow.forEach((col) =>
+        console.log(`field ${col.fieldName} display Order ${col.displayOrder}`)
+      )
+    );
+    console.log('row in test ' + localRow);
+  }
+
+  onButtonClicked(data: unknown): void {
+    console.log(`showing details for ${JSON.stringify(data)}`);
+  }
+
+  showDetails(row: unknown): void {
+    const localRow = row as Equipment;
+    console.log(`showing details for ${JSON.stringify(localRow)}`);
+  }
+
+  deleteRecord(row: unknown): void {
+    const localRow = row as Equipment;
+    const newData = this.tableData.filter((x) => x.id !== localRow.id);
+
+    this.listData$.next({
+      isLoaded: true,
+      payload: newData,
+    });
+
+    console.log(`deleting record for ${JSON.stringify(localRow)}`);
+  }
+
+  editRecord(row: unknown): void {
+    const localRow = row as Equipment;
+
+    const randomElementIndex = Math.floor(
+      Math.random() * this.tableData.length
+    );
+    this.tableData.push(this.tableData[randomElementIndex]);
+
+    this.listData$.next({
+      isLoaded: true,
+      payload: this.tableData,
+    });
+
+    console.log(`editing record for ${JSON.stringify(localRow)}`);
+  }
+  onCheckboxData(event: unknown): void {
+    console.log(`'check box data ${JSON.stringify(event)} '`);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  GridData(): any {
+    // eslint-disablean-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data: any = {
+      '4004': {
+        definition: {
+          componentId: 4004,
+          componentTypeId: 1,
+          name: 'COTI Sales Summary',
+          description: '',
+          componentType: 'Grid',
+          roleId: 2147483646,
+        },
+        config: [
+          {
+            configName: 'ShowColumnBorder',
+            configValue: 'false',
+            rs_Type: '4004.config',
+          },
+          {
+            configName: 'ShowTitle',
+            configValue: 'True',
+            rs_Type: '4004.config',
+          },
+          {
+            configName: 'GroupBy',
+            rs_Type: '4004.config',
+          },
+          {
+            configName: 'ShowRowHover',
+            configValue: 'True',
+            rs_Type: '4004.config',
+          },
+          {
+            configName: 'ShowTotalCount',
+            rs_Type: '4004.config',
+          },
+          {
+            configName: 'EnableExportToExcel',
+            configValue: 'true',
+            rs_Type: '4004.config',
+          },
+          {
+            configName: 'ShowGridTools',
+            configValue: 'True',
+            rs_Type: '4004.config',
+          },
+          {
+            configName: 'GroupHeaderTpl',
+            configValue: '{groupValue}',
+            rs_Type: '4004.config',
+          },
+          {
+            configName: 'HideGroupedHeader',
+            configValue: 'False',
+            rs_Type: '4004.config',
+          },
+          {
+            configName: 'PageSize',
+            configValue: '0',
+            rs_Type: '4004.config',
+          },
+          {
+            configName: 'ColumnsDraggable',
+            configValue: 'True',
+            rs_Type: '4004.config',
+          },
+          {
+            configName: 'TotalRow',
+            configValue:
+              '{&quot;textColumn&quot;: [{ &quot;column&quot;: &quot;invMonth&quot;, &quot;display&quot;: &quot;Total&quot; }], &quot;sumColumn&quot;: [&quot;sale&quot;, &quot;dealSheetAmount&quot;, &quot;dealSheetGP&quot;, &quot;actualAmount&quot;, &quot;actualGP&quot;, &quot;restatedAmount&quot;, &quot;restatedGP&quot;], &quot;averageColumn&quot;: [{&quot;column&quot;: &quot;dealSheetGPPercent&quot;, &quot;weight&quot;: &quot;sale&quot;},{&quot;column&quot;: &quot;actualGPPercent&quot;, &quot;weight&quot;: &quot;sale&quot;},{&quot;column&quot;: &quot;restatedGPPercent&quot;, &quot;weight&quot;: &quot;sale&quot;}]}',
+            rs_Type: '4004.config',
+          },
+          {
+            configName: 'ShowExport',
+            configValue: '1',
+            rs_Type: '4004.config',
+          },
+        ],
+        columns: [
+          {
+            fieldId: 40041,
+            fieldName: 'invMonth',
+            headerText: 'Mth',
+            minWidth: 100,
+            width: 100,
+            sortable: true,
+            alignment: 'center',
+            displayOrder: 10,
+            showInd: 2,
+            showExcelInd: 2,
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 40042,
+            fieldName: 'sale',
+            headerText: 'Count',
+            minWidth: 100,
+            width: 100,
+            sortable: true,
+            alignment: 'center',
+            displayOrder: 20,
+            showInd: 2,
+            showExcelInd: 2,
+            fieldDataType: 'link',
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 40043,
+            fieldName: 'DealSheet',
+            headerText: 'Deal Sheet',
+            sortable: false,
+            alignment: 'center',
+            displayOrder: 30,
+            showInd: 2,
+            showExcelInd: 2,
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 40044,
+            fieldName: 'dealSheetAmount',
+            headerText: 'Sell',
+            parentFieldId: 40043,
+            minWidth: 100,
+            flex: 1,
+            sortable: true,
+            alignment: 'right',
+            displayOrder: 10,
+            showInd: 2,
+            showExcelInd: 2,
+            fieldDataType: 'currency',
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 40045,
+            fieldName: 'dealSheetGPPercent',
+            headerText: 'GP%',
+            parentFieldId: 40043,
+            minWidth: 100,
+            flex: 1,
+            sortable: true,
+            alignment: 'center',
+            displayOrder: 20,
+            showInd: 2,
+            showExcelInd: 2,
+            fieldDataType: 'percent',
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 40046,
+            fieldName: 'dealSheetGP',
+            headerText: 'GP',
+            parentFieldId: 40043,
+            minWidth: 100,
+            flex: 1,
+            sortable: true,
+            alignment: 'right',
+            displayOrder: 30,
+            showInd: 2,
+            showExcelInd: 2,
+            fieldDataType: 'currency',
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 40047,
+            fieldName: 'Actual',
+            headerText: 'Actual',
+            sortable: false,
+            alignment: 'center',
+            displayOrder: 40,
+            showInd: 2,
+            showExcelInd: 2,
+            fieldDataType: 'number',
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 40048,
+            fieldName: 'actualAmount',
+            headerText: 'Sell',
+            parentFieldId: 40047,
+            minWidth: 100,
+            flex: 1,
+            sortable: true,
+            alignment: 'right',
+            displayOrder: 10,
+            showInd: 2,
+            showExcelInd: 2,
+            fieldDataType: 'currency',
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 40049,
+            fieldName: 'actualGPPercent',
+            headerText: 'GP%',
+            parentFieldId: 40047,
+            minWidth: 100,
+            flex: 1,
+            sortable: true,
+            alignment: 'center',
+            displayOrder: 20,
+            showInd: 2,
+            showExcelInd: 2,
+            fieldDataType: 'percent',
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 400410,
+            fieldName: 'actualGP',
+            headerText: 'GP',
+            parentFieldId: 40047,
+            minWidth: 100,
+            flex: 1,
+            sortable: true,
+            alignment: 'right',
+            displayOrder: 30,
+            showInd: 2,
+            showExcelInd: 2,
+            fieldDataType: 'currency',
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 400411,
+            fieldName: 'Restated',
+            headerText: 'Restated',
+            sortable: false,
+            alignment: 'center',
+            displayOrder: 50,
+            showInd: 2,
+            showExcelInd: 2,
+            fieldDataType: 'number',
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 400412,
+            fieldName: 'restatedAmount',
+            headerText: 'Sell',
+            parentFieldId: 400411,
+            minWidth: 100,
+            flex: 1,
+            sortable: true,
+            alignment: 'right',
+            displayOrder: 10,
+            showInd: 2,
+            showExcelInd: 2,
+            fieldDataType: 'currency',
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 400413,
+            fieldName: 'restatedGPPercent',
+            headerText: 'GP%',
+            parentFieldId: 400411,
+            minWidth: 100,
+            flex: 1,
+            sortable: true,
+            alignment: 'center',
+            displayOrder: 20,
+            showInd: 2,
+            showExcelInd: 2,
+            fieldDataType: 'percent',
+            rs_Type: '4004.columns',
+          },
+          {
+            fieldId: 400414,
+            fieldName: 'restatedGP',
+            headerText: 'GP',
+            parentFieldId: 400411,
+            minWidth: 100,
+            flex: 1,
+            sortable: true,
+            alignment: 'right',
+            displayOrder: 30,
+            showInd: 2,
+            showExcelInd: 2,
+            fieldDataType: 'currency',
+            rs_Type: '4004.columns',
+          },
+        ],
+      },
+      '': [
+        {
+          roleFlags: '16',
+          componentTypeId: 1,
+        },
+      ],
+      execState: {
+        status: 0,
+        success: true,
+        stats: {
+          responseTime: 349,
+          parseTime: 3,
+        },
+      },
+    };
+
+    return data;
+  }
+
+  gridData2(): any {
+    const data: any = {
+      definition: {
+        componentId: 1,
+        componentTypeId: 1,
+        name: 'Status Summary',
+        description: "SN's Alert Management",
+        componentType: 'Grid',
+        roleId: 2147483646,
+      },
+      config: [
+        {
+          configName: 'ShowColumnBorder',
+          configValue: 'True',
+        },
+        {
+          configName: 'ShowTitle',
+          configValue: 'True',
+        },
+        {
+          configName: 'GroupBy',
+          configValue: null,
+        },
+        {
+          configName: 'ShowRowHover',
+          configValue: 'True',
+        },
+        {
+          configName: 'ShowTotalCount',
+          configValue: null,
+        },
+        {
+          configName: 'EnableExportToExcel',
+          configValue: 'True',
+        },
+        {
+          configName: 'ShowGridTools',
+          configValue: 'True',
+        },
+        {
+          configName: 'GroupHeaderTpl',
+          configValue: '{groupValue}',
+        },
+        {
+          configName: 'HideGroupedHeader',
+          configValue: 'False',
+        },
+        {
+          configName: 'PageSize',
+          configValue: '50',
+        },
+        {
+          configName: 'ColumnsDraggable',
+          configValue: 'True',
+        },
+        {
+          configName: 'TotalRow',
+          configValue: null,
+        },
+        {
+          configName: 'ShowExport',
+          configValue: '1',
+        },
+      ],
+      columns: [
+        {
+          fieldId: 1,
+          fieldName: 'type',
+          template: null,
+          headerText: 'Type',
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: 1,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: true,
+          alignment: null,
+          displayOrder: 9,
+          showInd: 2,
+          showExcelInd: 2,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: 'string',
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+          hasSumColumn: false,
+        },
+        {
+          fieldId: 2,
+          fieldName: 'engineMC',
+          template: '{engineAR} || {engineMC}',
+          headerText: 'Engine',
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: 2,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: false,
+          alignment: 'center',
+          displayOrder: 10,
+          showInd: 2,
+          showExcelInd: 2,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: 'string',
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+          hasSumColumn: false,
+        },
+        {
+          fieldId: 3,
+          fieldName: 'coolingMC',
+          template: '{coolingAR} || {coolingMC}',
+          headerText: 'Cooling',
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: 2,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: false,
+          alignment: 'center',
+          displayOrder: 3,
+          showInd: 2,
+          showExcelInd: 2,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: 'string',
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+          hasSumColumn: false,
+        },
+        {
+          fieldId: 4,
+          fieldName: 'transMC',
+          template: '{transAR} || {transMC}',
+          headerText: 'Trans',
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: 2,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: false,
+          alignment: 'center',
+          displayOrder: 4,
+          showInd: 2,
+          showExcelInd: 2,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: 'string',
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+          hasSumColumn: false,
+        },
+        {
+          fieldId: 5,
+          fieldName: 'drivetrainMC',
+          template: '{drivetrainAR} || {drivetrainMC}',
+          headerText: 'Drivetrain',
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: 2,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: false,
+          alignment: 'center',
+          displayOrder: 5,
+          showInd: 2,
+          showExcelInd: 2,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: 'string',
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+          hasSumColumn: false,
+        },
+        {
+          fieldId: 10,
+          fieldName: 'hydraulicMC',
+          template: '{hydraulicAR} || {hydraulicMC}',
+          headerText: 'Hydraulic',
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: 2,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: false,
+          alignment: 'center',
+          displayOrder: 6,
+          showInd: 2,
+          showExcelInd: 2,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: 'string',
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+          hasSumColumn: false,
+        },
+        {
+          fieldId: 11,
+          fieldName: 'electricalMC',
+          template: '{electricalAR} || {electricalMC}',
+          headerText: 'Electrical',
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: 2,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: false,
+          alignment: 'center',
+          displayOrder: 7,
+          showInd: 1,
+          showExcelInd: 1,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: 'string',
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+          hasSumColumn: false,
+        },
+        {
+          fieldId: 12,
+          fieldName: 'otherMC',
+          template: '{otherAR} || {otherMC}',
+          headerText: 'Other',
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: 2,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: false,
+          alignment: 'center',
+          displayOrder: 8,
+          showInd: 2,
+          showExcelInd: 2,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: 'string',
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+          hasSumColumn: false,
+        },
+        {
+          fieldId: 13,
+          fieldName: 'cost',
+          template: null,
+          headerText: 'Cost',
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: null,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: true,
+          alignment: null,
+          displayOrder: 9,
+          showInd: 1,
+          showExcelInd: 1,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: 'number',
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+          hasSumColumn: false,
+        },
+        {
+          fieldId: 15,
+          fieldName: 'discount',
+          template: null,
+          headerText: 'Discount',
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: null,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: true,
+          alignment: null,
+          displayOrder: 10,
+          showInd: 1,
+          showExcelInd: 1,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: 'number',
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+          hasSumColumn: true,
+        },
+        {
+          fieldId: 17,
+          fieldName: 'drivetrainAR',
+          template: null,
+          headerText: null,
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: null,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: true,
+          alignment: null,
+          displayOrder: null,
+          showInd: 1,
+          showExcelInd: 1,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: null,
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+        },
+        {
+          fieldId: 19,
+          fieldName: 'hydraulicAR',
+          template: null,
+          headerText: null,
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: null,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: true,
+          alignment: null,
+          displayOrder: null,
+          showInd: 1,
+          showExcelInd: 1,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: null,
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+        },
+        {
+          fieldId: 21,
+          fieldName: 'electricalAR',
+          template: null,
+          headerText: null,
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: null,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: true,
+          alignment: null,
+          displayOrder: null,
+          showInd: 1,
+          showExcelInd: 1,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: null,
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+        },
+        {
+          fieldId: 23,
+          fieldName: 'otherAR',
+          template: null,
+          headerText: null,
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: null,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: true,
+          alignment: null,
+          displayOrder: null,
+          showInd: 1,
+          showExcelInd: 1,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: null,
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+        },
+        {
+          fieldId: 25,
+          fieldName: 'engineAR',
+          template: null,
+          headerText: null,
+          parentFieldId: null,
+          minWidth: null,
+          width: null,
+          flex: null,
+          headerCssClass: null,
+          fieldCssClass: null,
+          format: null,
+          linkTemplate: null,
+          sortable: true,
+          alignment: null,
+          displayOrder: null,
+          showInd: 1,
+          showExcelInd: 1,
+          requiredValidatorInd: null,
+          validatorType: null,
+          validationExpression: null,
+          validationBeginValue: null,
+          validationEndValue: null,
+          fieldDataType: null,
+          editableInd: null,
+          useNull: null,
+          primaryInd: null,
+        },
+      ],
+    };
+
+    return data;
+  } //end g2
+}
