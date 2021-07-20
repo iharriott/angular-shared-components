@@ -8,4 +8,4 @@ const routes: Routes = [{ path: '', component: TestGridComponent }];
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
