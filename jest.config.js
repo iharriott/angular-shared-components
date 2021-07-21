@@ -1,9 +1,16 @@
-/** @type {import('@jest/types').Config.InitialOptions} */
+/* eslint-disable */
+const { pathsToModuleNameMapper } = require('ts-jest/utils');
+const { compilerOptions } = require('./tsconfig');
+
 module.exports = {
-  projects: [
-    '<rootDir>/projects/shared-form',
-    '<rootDir>/projects/shared-table',
-    '<rootDir>/projects/shared-nav',
-    '<rootDir>/projects/shared-filter',
-  ],
+  preset: 'jest-preset-angular',
+  roots: ['<rootDir>/projects/'],
+  testMatch: ['**/*(*.)@(spec|test).[tj]s?(x)'],
+  setupFilesAfterEnv: ['<rootDir>/setupJest.ts'],
+  collectCoverage: true,
+  coverageReporters: ['html'],
+  coverageDirectory: 'coverage/my-app',
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths || {}, {
+    prefix: '<rootDir>/',
+  }),
 };

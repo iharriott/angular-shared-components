@@ -1,4 +1,3 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -17,6 +16,12 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
+    "paths": {
+      "shared-components-lib": [
+        "dist/shared-components-lib/shared-components-lib",
+        "dist/shared-components-lib"
+      ]
+    },
     "target": "es2017",
     "module": "es2020",
     "lib": ["es2018", "dom"],

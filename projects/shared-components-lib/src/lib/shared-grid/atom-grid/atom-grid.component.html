@@ -1,0 +1,167 @@
+<mat-toolbar *ngIf="showSaveColumnData || showExport">
+    <mat-toolbar-row>
+     <button
+     mat-raised-button
+     (click)="emitColumnData()"
+     class="atom-button button" *ngIf="showSaveColumnData"
+     color="primary"
+     >
+     <mat-icon>save</mat-icon>
+     Save Columns
+   </button>
+   
+   <mat-form-field appearance="outline" class="line" *ngIf="showExport" color="primary" >
+     <mat-label>Select Format</mat-label>
+     <mat-select [(ngModel)]="selectedTableExportFormat" name="exportType" >
+       <mat-option *ngFor="let format of tableExportFormats" [value]="format.value">
+         {{format.viewValue}}
+       </mat-option>
+     </mat-select>
+   </mat-form-field>
+   
+   <button
+   mat-raised-button
+   (click)="onExport(); exporter.exportTable(selectedTableExportFormat)"
+   class="atom-button button" *ngIf="showExport"
+   color="primary"
+   >
+   <mat-icon>download</mat-icon>
+   Export Data
+   </button>
+   
+    </mat-toolbar-row>
+   
+   </mat-toolbar>
+   
+   <div >
+   
+   <div *ngIf="!(gridState$ | async)?.isLoaded" class="loader">
+       <mat-progress-spinner color="primary" mode="indeterminate">
+       </mat-progress-spinner>
+   </div>
+   
+       <!-- TODO: should be able to get rid of above code (table and div wrapper) once multi-layer headers are enabled (mat. 6) -->
+       <!--[style.flex]="column.flex" - removed due to flex issues - can be added back in once the multi-layer headers are implemented in the material grid -->
+       <table mat-table matTableExporter #table [dataSource]="dataSource" matSort
+       #exporter="matTableExporter"
+       cdkDropList
+       cdkDropListLockAxis="x"
+       cdkDropListOrientation="horizontal"
+       (cdkDropListDropped)="dropListDropped($event)"
+       >
+       <ng-container matColumnDef="select" *ngIf="showCheckboxColumn">
+         <th mat-header-cell *matHeaderCellDef>
+           <mat-checkbox
+             (change)="$event ? masterToggle() : null"
+             [checked]="selection.hasValue() && isAllSelected()"
+             [indeterminate]="selection.hasValue() && !isAllSelected()"
+             color="primary"
+           >
+           </mat-checkbox>
+         </th>
+         <td mat-cell *matCellDef="let row">
+           <mat-checkbox
+             (click)="$event.stopPropagation()"
+             (change)="
+               onChange($event, row); $event ? selection.toggle(row) : null
+             "
+             [checked]="selection.isSelected(row)"
+             color="primary"
+           >
+           </mat-checkbox>
+         </td>
+         <td mat-footer-cell *matFooterCellDef></td>
+       </ng-container>
+         <ng-container matColumnDef="{{column.fieldName}}" *ngFor="let column of columnNames">
+           <th mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!column.sortable"
+             [style.min-width]="column.minWidth+'px'" [style.flex]="column.minWidth"
+             [ngClass]="'align-'+column.alignment"
+             [class.parent-header]='column.children?.length'
+             [attr.rowSpan]="column.rowspan"
+             [attr.colSpan]="column.colspan"
+             cdkDrag
+             [cdkDragDisabled]="showCheckboxColumn"
+             >
+             {{column.headerText}}</th>
+             
+           <td  mat-cell *matCellDef="let element" [style.min-width]="column.minWidth+'px'" [style.flex]="column.minWidth"
+             [style.text-align]="column.alignment" [ngClass]="element[column.fieldName]?.class"
+              [class.link]="column?.fieldDataType && column?.fieldDataType?.split(':')![0]==='link' && element[column.fieldName]"
+             
+             (click)="onCellClicked(column?.fieldDataType?.split(':')![0]==='link',element[column.fieldName])">
+             <!--{{(element[column.fieldName] | dynamicPipe:column.fieldDataType)}}-->
+              {{element[column.fieldName]}}
+           </td>
+           <td mat-footer-cell *matFooterCellDef>
+             {{ footerRow[column.fieldName] }}
+           </td>
+         </ng-container>
+         <ng-container *ngIf="detailsEvent?.length" [matColumnDef]="detailsEvent">
+           <th mat-header-cell *matHeaderCellDef></th>
+           <td mat-cell *matCellDef="let element" [id]="detailsEvent" (click)="onButtonClicked('details', element)">
+             <button mat-icon-button color="accent">
+               <mat-icon>reorder</mat-icon>
+             </button>
+           </td>
+           <td mat-footer-cell *matFooterCellDef></td>
+         </ng-container>
+         <ng-container *ngIf="updateEvent?.length" [matColumnDef]="updateEvent">
+           <th mat-header-cell *matHeaderCellDef></th>
+           <td mat-cell *matCellDef="let element" [id]="updateEvent" (click)="onButtonClicked('edit', element)">
+             <button mat-icon-button color="primary">
+               <mat-icon class="mat-18">update</mat-icon>
+             </button>
+           </td>
+           <td mat-footer-cell *matFooterCellDef></td>
+         </ng-container>
+         <ng-container *ngIf="deleteEvent?.length" [matColumnDef]="deleteEvent">
+           <th mat-header-cell *matHeaderCellDef></th>
+           <td mat-cell *matCellDef="let element" [id]="deleteEvent" (click)="onButtonClicked('delete', element)">
+             <button mat-icon-button color="primary">
+               <mat-icon class="mat-18">delete</mat-icon>
+             </button>
+           </td>
+           <td mat-footer-cell *matFooterCellDef></td>
+           </ng-container>
+   
+         <!-- this doesn't show anything - looks like the ngFor isn't catching the displayedColumnsArray change -->
+         <!-- <ng-container *ngFor="let headerRow of displayedColumnsArray">
+           <tr mat-header-row *matHeaderRowDef="headerRow"></tr>
+         </ng-container> -->
+   
+         <!-- this works as a hacky workaround, but it's pretty ugly.-->
+         <!-- <ng-container *ngFor="let i of [0,1,2,3]">
+           <tr mat-header-row *matHeaderRowDef="(displayedColumnsArray && displayedColumnsArray[i] ? displayedColumnsArray[i] : []) ; sticky: true"></tr>
+         </ng-container> -->
+         <!-- without being able to use height css, can't display rows unless they exist - the following is the only way I can find to work with change detection-->
+         <tr mat-header-row *matHeaderRowDef="(displayedColumnsArray && displayedColumnsArray[0] ? displayedColumnsArray[0] : []) ; sticky: false"></tr>
+       <ng-container *ngIf="displayedColumnsArray && displayedColumnsArray[1]">
+         <tr mat-header-row *matHeaderRowDef="(displayedColumnsArray && displayedColumnsArray[1] ? displayedColumnsArray[1] : []) ; sticky: false"></tr>
+       </ng-container>
+       <ng-container *ngIf="displayedColumnsArray && displayedColumnsArray[2]">
+         <tr mat-header-row *matHeaderRowDef="(displayedColumnsArray && displayedColumnsArray[2] ? displayedColumnsArray[2] : []) ; sticky: false"></tr>
+       </ng-container>
+       <ng-container *ngIf="displayedColumnsArray && displayedColumnsArray[3]">
+         <tr mat-header-row *matHeaderRowDef="(displayedColumnsArray && displayedColumnsArray[3] ? displayedColumnsArray[3] : []) ; sticky: false"></tr>
+       </ng-container>
+   
+         <tr mat-row *matRowDef="let row; columns: dataColumns;" [ngClass]="row.atomGridClass"></tr>
+         <div *ngIf="hasFooterRow">
+           <tr
+             mat-footer-row
+             *matFooterRowDef="dataColumns"
+             class="first-footer-row"
+           ></tr>
+         </div>
+       </table>
+   </div>
+       <div *ngIf="(gridState$ | async)!.payload?.length === 0" class="mat-row no-data">No data is available.</div>
+     <mat-toolbar>
+       <mat-toolbar-row>
+         <span class="atom-spacer"></span>
+         <span>
+           <mat-paginator class="paginator" #paginator [pageSize]="numberOfRows" showFirstLastButtons></mat-paginator>
+         </span>
+       </mat-toolbar-row>
+     </mat-toolbar>
+   

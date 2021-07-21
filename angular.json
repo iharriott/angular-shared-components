@@ -343,7 +343,60 @@
           }
         }
       }
+    },
+    "shared-components-lib": {
+      "projectType": "library",
+      "root": "projects/shared-components-lib",
+      "sourceRoot": "projects/shared-components-lib/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/shared-components-lib/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/shared-components-lib/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/shared-components-lib/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "shared-filter:build:production"
+            },
+            "development": {
+              "browserTarget": "shared-filter:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "shared-filter:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/shared-components-lib/**/*.ts",
+              "projects/shared-components-lib/**/*.html"
+            ]
+          }
+        }
+      }
     }
   },
-  "defaultProject": "shared-table"
+  "defaultProject": "shared-components-lib",
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
+  }
 }

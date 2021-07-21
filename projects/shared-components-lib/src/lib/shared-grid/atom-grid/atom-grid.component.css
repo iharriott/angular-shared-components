@@ -1,0 +1,231 @@
+.mat-header-cell {
+  background: #F3F3F3;
+  border-right: 1px solid #dcdcdc;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000000;
+  padding: 0px 1px;
+  min-height: 0px;
+}
+
+.mat-header-cell.parent-header {
+  background: #E9E9E9;
+}
+
+.mat-table {
+  width: 100%; 
+  overflow: auto;
+  max-height: 500px;
+}
+
+.mat-column-select {
+  overflow: visible;
+}
+
+.example-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 500px;
+  min-width: 300px;
+}
+
+.mat-paginator {
+  background: inherit;
+}
+
+.mat-header-row,
+.mat-row,
+.tr {
+  height: 32px;
+  padding: 0px;
+  align-items: stretch;
+}
+
+
+.grid-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: scroll;
+}
+
+.mat-row:nth-child(odd) {
+  background-color: #efefef;
+}
+
+.mat-row.sub-total {
+  background-color: #d7dde5;
+  font-weight: bolder;
+}
+
+.mat-row.grand-total {
+  background-color: #d7dde5;
+  font-weight: bolder;
+}
+
+.mat-cell {
+  border-right: 1px solid #dcdcdc;
+  font-size: 13px;
+  padding: 0px 1px;
+}
+
+.link {
+  
+  color: white;
+}
+
+.link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 800 !important;
+}
+
+.loader {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  z-index: 9999; 
+}
+
+.no-data {
+  font-weight: bold;
+  font-size: 15px;
+  padding: 5px;
+  padding-left: 20px;
+  text-align: center;
+}
+
+
+.green {
+  color: green;
+  width: 100%;
+  border: none;
+}
+
+.red {
+  color: red;
+  width: 100%;
+  border: none;
+}
+
+.completed-bg {
+  background: #5cb85c;
+}
+
+.in-progress-bg {
+  background: #f0ad4e;
+}
+
+.not-applicable-bg {
+  background: #777777;
+}
+
+
+.align-left ::ng-deep .mat-sort-header-container {
+  justify-content: flex-start;
+}
+
+.align-center ::ng-deep .mat-sort-header-container {
+  justify-content: center;
+}
+
+.align-right ::ng-deep .mat-sort-header-container {
+  justify-content: flex-end !important;
+}
+
+
+
+td.mat-cell:first-of-type,
+td.mat-footer-cell:first-of-type,
+th.mat-header-cell:first-of-type {
+  padding-left: inherit;
+}
+
+
+.atom-button-container {
+  padding-bottom: -1px;
+  padding-top: 10px;
+  vertical-align: bottom;
+}
+
+.atom-button+.atom-button {
+  margin-left: 8px;
+}
+
+.mat-raised-button {
+  font-size: small;
+  height: 2.8rem;
+  margin: 0.35rem;
+}
+
+.mat-raised-button.mat-accent {
+  background-color: white;
+  
+  color: blue;
+}
+
+.mat-raised-button.mat-primary:enabled {
+  
+  margin: 0.25rem;
+}
+
+.mat-raised-button.mat-primary:hover {
+  cursor: pointer;
+  
+  font-weight: 545;
+}
+
+.mat-raised-button.mat-accent:hover {
+  cursor: pointer;
+  background-color: lightgray;
+  font-weight: 525;
+}
+
+.mat-raised-button.mat-primary:disabled {
+  opacity: 0.4;
+  color: whitesmoke;
+  cursor: not-allowed;
+  
+}
+
+.line {
+  width: 10%;
+  height: 40px;
+  font-size: 17px;
+  float: left;
+  vertical-align: bottom;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.button {
+  width: 11%;
+  height: 40px;
+  float: left;
+  font-size: 15px;
+  vertical-align: bottom;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+::ng-deep .mat-form-field-flex>.mat-form-field-infix {
+  padding: 0.4em 0px !important;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-label {
+  margin-top: -15px;
+}
+
+::ng-deep label.ng-star-inserted {
+  transform: translateY(-0.59375em) scale(.75) !important;
+}
+
+.first-footer-row {
+  font-weight: bold;
+}
+
+.atom-spacer {
+  flex: 1 1 auto;
+}
