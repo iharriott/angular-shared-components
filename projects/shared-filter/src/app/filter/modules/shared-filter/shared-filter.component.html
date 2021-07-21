@@ -1,0 +1,66 @@
+<ng-container
+  *ngIf='!compConfig?.options?.isError; else errorTemplate'>
+  <ng-container
+    *ngIf='compConfig?.options?.isReady;
+        then filterTemplate else ghostTemplate'>
+  </ng-container>
+</ng-container>
+
+<ng-template #filterTemplate>
+  <div class='column mt-sm'>
+    <app-shared-forms
+      *ngIf='sharedFormsConfig?.compConfig?.options?.isShow'
+      [compConfig]='sharedFormsConfig?.compConfig'
+      [inputChange]='sharedFormsConfig?.inputChange'
+      (compOutput)='sharedFormsConfig?.compOutput($event)'>
+    </app-shared-forms>
+
+    <div *ngIf='buttonContext.length > 0' class='row mt-sm'>
+      <div class='row'>
+        <ng-container
+          *ngFor='let button of getButtonContext(position.FLEX_START); let i = index;'>
+          <ng-container
+            *ngTemplateOutlet='buttonTemplate; context: button'>
+          </ng-container>
+        </ng-container>
+      </div>
+      <div class='row fx-end'>
+        <ng-container
+          *ngFor='let button of getButtonContext(position.FLEX_END); let i = index;'>
+          <ng-container
+            *ngTemplateOutlet='buttonTemplate; context: button'>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #buttonTemplate let-context='context'>
+  <div
+    matTooltip='{{context?.tooltip}}'
+    matTooltipPosition='above'
+    *ngIf='context?.isShow'>
+    <button
+      mat-button
+      (click)='context?.click(context.type)'
+      [disabled]='context?.isDisable'>
+          <span>
+            {{context?.label}}
+          </span>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #errorTemplate>
+  <div class='error'>
+    <mat-icon color='warn'>report_problem</mat-icon>
+    <p class='error-message'>An error occurred while loading data</p>
+    <a class='refresh' href='#' (click)='refresh()'>
+      Refresh
+    </a>
+  </div>
+</ng-template>
+
+<ng-template #ghostTemplate>
+</ng-template>

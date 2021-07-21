@@ -6,6 +6,7 @@
     "start": "ng serve",
     "start:shared-nav": "ng serve --project=shared-nav",
     "start:shared-form": "ng serve --project=shared-form",
+    "start:shared-filter": "ng serve --project=shared-filter",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "lint": "eslint . --ext .ts",

@@ -258,6 +258,91 @@
           }
         }
       }
+    },
+    "shared-filter": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "projects/shared-filter",
+      "sourceRoot": "projects/shared-filter/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/shared-filter",
+            "index": "projects/shared-filter/src/index.html",
+            "main": "projects/shared-filter/src/main.ts",
+            "polyfills": "projects/shared-filter/src/polyfills.ts",
+            "tsConfig": "projects/shared-filter/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/shared-filter/src/favicon.ico",
+              "projects/shared-filter/src/assets"
+            ],
+            "styles": [
+              "projects/shared-filter/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/shared-filter/src/environments/environment.ts",
+                  "with": "projects/shared-filter/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "shared-filter:build:production"
+            },
+            "development": {
+              "browserTarget": "shared-filter:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "shared-filter:build"
+          }
+        }
+      }
     }
   },
   "defaultProject": "shared-table"

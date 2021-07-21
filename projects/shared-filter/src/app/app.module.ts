@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
-import { FormModule } from './form/form.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from '../../../shared/shared.module';
+import { FilterModule } from './filter/filter.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [AppComponent],
@@ -11,7 +11,7 @@ import { SharedModule } from '../../../shared/shared.module';
     BrowserModule,
     BrowserAnimationsModule,
     SharedModule.forRoot(),
-    FormModule,
+    FilterModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

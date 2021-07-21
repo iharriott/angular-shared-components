@@ -471,60 +471,6 @@
   </ng-container>
 </ng-template>
 
-<!-- FIXME - Revisit later-->
-<!--<ng-container [formGroupName]='controlIndex'>
-     {{controlFGA(configControl, controlIndex)}}
-     <ng-container
-       [ngTemplateOutlet]='templateType?.DEFAULT===getConfig(configControl, controlIndex)?.templateType?
-                           defaultTypeTemplate : customTypeTemplate'
-       [ngTemplateOutletContext]='{ctx:{
-                   control:getControl(configControl, controlIndex),
-                   config:getConfig(configControl, controlIndex)
-                   }}'>
-     </ng-container>
-   </ng-container>-->
-
-<!-- FIXME - Revisit later-->
-<!--
-<ng-template #defaultTypeTemplate let-ctx='ctx'>
-  <ng-container [ngSwitch]='ctx?.config?.fieldType'>
-    <ng-container *ngSwitchCase="'input'">
-      <mat-form-field>
-        <input matInput
-               [placeholder]='ctx?.config?.label'
-               [formControlName]='ctx?.control'
-               [id]='ctx?.config?.key'
-               [matTooltip]='ctx?.config?.tooltip'
-               [tabIndex]='ctx?.config?.sequence'
-               [type]='ctx?.config?.fieldType'>
-      </mat-form-field>
-    </ng-container>
-  </ng-container>
-</ng-template>
-
-<ng-template #customTypeTemplate let-ctx='ctx'>
-  <ng-container [ngSwitch]='ctx?.config?.fieldType'>
-    <ng-container *ngSwitchCase="'input'">
-      <mat-label class='' *ngIf='ctx?.config?.label'>
-        <span id='{{ctx?.config?.key}}' [innerHTML]='ctx?.config?.label'></span>
-        <mat-icon *ngIf='ctx?.config?.tooltip'
-                  class='info-icon'
-                  matTooltip='{{ctx?.config?.tooltip}}'
-                  matTooltipPosition='right'>
-          info_outline
-        </mat-icon>
-      </mat-label>
-      <mat-form-field>
-        <input matInput
-               [placeholder]='ctx?.config?.placeholder'
-               [id]='ctx?.config?.id'
-               [formControlName]='ctx?.control'
-               [tabIndex]='ctx?.config?.sequence'>
-      </mat-form-field>
-    </ng-container>
-  </ng-container>
-</ng-template>-->
-
 <ng-template #errorTemplate>
   <div class='error'>
     <mat-icon color='warn'>report_problem</mat-icon>

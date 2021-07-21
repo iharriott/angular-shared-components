@@ -16,9 +16,8 @@ export enum TemplateType {
 }
 
 export enum FormAction {
-  VOID,
-  ASYNC,
-  VALUE_CHANGE,
+  RESET = 'RESET',
+  CLEAR = 'CLEAR',
 }
 
 export interface NgFormsInputConfig {
@@ -32,6 +31,7 @@ export interface NgFormsInputConfig {
     isError?: boolean;
     readonly?: boolean;
   };
+  formAction?: FormAction;
 }
 
 export interface NgFormsOutputConfig {

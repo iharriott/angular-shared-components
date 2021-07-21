@@ -1,32 +1,31 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { SharedFormsConfig } from './app.model';
-import { Validators } from '@angular/forms';
+import { Component } from '@angular/core';
 import { Subject } from 'rxjs';
-import {
-  FieldConfig,
-  NgFormsInputConfig,
-  NgFormsOutputConfig,
-} from './form/modules/shared-forms/shared-forms.model';
+import { FieldConfig } from '../../../shared-form/src/app/form/modules/shared-forms/shared-forms.model';
 import {
   AppConfig,
   AppData,
   getConfig,
-  getData,
-} from './form/modules/shared-forms/shared-forms.data';
+} from '../../../shared-form/src/app/form/modules/shared-forms/shared-forms.data';
+import { Validators } from '@angular/forms';
+import { SharedFilterConfig } from './app.model';
+import {
+  SharedFilterInputConfig,
+  SharedFilterOutputConfig,
+} from './filter/modules/shared-filter/shared-filter.model';
+import { getData } from './app.data';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   /*** Local Variables ***/
-  title = 'shared-form';
+  title = 'shared-filter';
   outputData: any;
   /*** End of Local Variables ***/
   /*** Child Components ***/
-  sharedFormsConfig: SharedFormsConfig | null | undefined;
+  sharedFilterConfig: SharedFilterConfig | null | undefined;
 
   /*** End of Child Components ***/
 
@@ -44,7 +43,7 @@ export class AppComponent implements OnInit {
    */
   ngOnInit(): void {
     this.initThisComponent();
-    this.getData();
+    this.prepareData();
   }
 
   /*** End of Life Cycle Implementation ***/
@@ -60,7 +59,7 @@ export class AppComponent implements OnInit {
    * @private
    */
   private initThisComponent(): void {
-    this.sharedFormsConfig = {
+    this.sharedFilterConfig = {
       compConfig: {
         options: {
           isShow: false,
@@ -70,10 +69,10 @@ export class AppComponent implements OnInit {
           fieldData: null,
         },
       },
-      inputChange: new Subject<NgFormsInputConfig>(),
-      compOutput: (event: NgFormsOutputConfig): void => {
+      inputChange: new Subject<SharedFilterInputConfig>(),
+      compOutput: (event: SharedFilterOutputConfig): void => {
         // console.log('testing', event);
-        this.outputData = event.value;
+        this.outputData = event.data;
       },
     };
   }
@@ -83,7 +82,7 @@ export class AppComponent implements OnInit {
    * @return void
    * @private
    */
-  private getData(): void {
+  private prepareData(): void {
     const data: AppData = getData;
     const config: AppConfig[] = getConfig;
 
@@ -117,14 +116,14 @@ export class AppComponent implements OnInit {
         fieldConfigs.push(fieldConfig);
       }
     });
-    if (this.sharedFormsConfig) {
-      this.sharedFormsConfig.compConfig.options = {
+    if (this.sharedFilterConfig) {
+      this.sharedFilterConfig.compConfig.options = {
         isShow: true,
         isError: false,
         readonly: false,
       };
-      this.sharedFormsConfig.compConfig.data = {
-        ...this.sharedFormsConfig?.compConfig.data,
+      this.sharedFilterConfig.compConfig.data = {
+        ...this.sharedFilterConfig?.compConfig.data,
         fieldConfig: {
           dynamicFormName: 'TestDynamicForm',
           fieldGroups: [
@@ -133,22 +132,13 @@ export class AppComponent implements OnInit {
               fieldTemplateType: 'default',
               fieldConfig: fieldConfigs,
             },
-            {
-              fieldGroupClassName: 'column',
-              fieldTemplateType: 'default',
-              fieldConfig: fieldConfigs,
-            },
-            {
-              fieldGroupClassName: 'column',
-              fieldTemplateType: 'custom',
-              fieldConfig: fieldConfigs,
-            },
           ],
         },
         fieldData: data,
       };
       // FYI: This is how you need to update the child component
-      // this.ngFormsConfig?.inputChange.next(this.ngFormsConfig?.compConfig);
+      // this.sharedFilterConfig?.inputChange.next(this.sharedFilterConfig?.compConfig);
+      //console.log('testing filter app com');
     }
   }
 

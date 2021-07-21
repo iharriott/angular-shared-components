@@ -13,6 +13,7 @@ import {
   FieldConfig,
   FieldGroup,
   FieldType,
+  FormAction,
   LabelValue,
   NgFormsInputConfig,
   NgFormsOutputConfig,
@@ -86,6 +87,7 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
         .pipe(takeUntil(this.onDestroy$))
         .subscribe((changes: NgFormsInputConfig) => {
           changes && (this.compConfig = changes);
+          this.processFormAction();
           this._changeDetectorRef.detectChanges();
         });
   }
@@ -180,10 +182,11 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.compConfig?.data.fieldConfig?.fieldGroups,
       this.compConfig?.data.fieldData
     );
+    this._changeDetectorRef.detectChanges();
   }
 
   /**
-   * Function to construct constructNgForm form group
+   * Function to construct constructNgForm filter group
    * @param fieldGroups
    * @param fieldData
    * @return void
@@ -241,7 +244,7 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Function to construct controls form array
+   * Function to construct controls filter array
    * @param fieldGroups
    * @param fieldData
    * @return FormArray
@@ -270,7 +273,7 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Function to construct field config from form array
+   * Function to construct field config from filter array
    * @param fieldConfigs
    * @param fieldData
    * @return FormArray
@@ -317,6 +320,44 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
         // console.log('checking output value', outputConfig.value);
         this.compOutput?.next(outputConfig);
       });
+  }
+
+  /**
+   * Function to process form action
+   * @void
+   * @private
+   */
+  private processFormAction(): void {
+    if (this.compConfig && this.compConfig.formAction) {
+      switch (this.compConfig.formAction) {
+        case FormAction.CLEAR:
+          if (
+            this.compConfig?.data.fieldConfig?.fieldGroups &&
+            Array.isArray(this.compConfig?.data.fieldConfig?.fieldGroups) &&
+            this.compConfig?.data.fieldConfig?.fieldGroups.length > 0
+          ) {
+            this.hydrateForm(
+              this.compConfig?.data.fieldConfig?.fieldGroups,
+              null
+            );
+          }
+          break;
+        case FormAction.RESET:
+          if (
+            this.compConfig?.data.fieldConfig?.fieldGroups &&
+            Array.isArray(this.compConfig?.data.fieldConfig?.fieldGroups) &&
+            this.compConfig?.data.fieldConfig?.fieldGroups.length > 0
+          ) {
+            this.hydrateForm(
+              this.compConfig?.data.fieldConfig?.fieldGroups,
+              this.compConfig?.data.fieldData
+            );
+          }
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   /*** End of Private Functions ***/
