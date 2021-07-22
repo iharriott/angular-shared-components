@@ -71,7 +71,6 @@ export class AppComponent {
       },
       inputChange: new Subject<SharedFilterInputConfig>(),
       compOutput: (event: SharedFilterOutputConfig): void => {
-        // console.log('testing', event);
         this.outputData = event.data;
       },
     };

@@ -313,13 +313,48 @@ export class SharedFormsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.ngFormGroup.valueChanges
       .pipe(distinctUntilChanged(), takeUntil(this.onDestroy$))
       .subscribe(() => {
+        const formData: unknown[] = [];
+        const ngControls: FormArray = this.getFormArrayByLocator(
+          this.ngFormGroup,
+          'ngFormControls'
+        );
+        if (ngControls instanceof FormArray) {
+          ngControls.controls.forEach((controlFG: unknown) => {
+            if (controlFG instanceof FormGroup) {
+              const fieldConfigs: FormArray = this.getFormArrayByLocator(
+                controlFG,
+                'fieldConfigs'
+              );
+              const data: Record<string, unknown> = {};
+              fieldConfigs.controls.forEach((fieldFG: unknown) => {
+                if (fieldFG instanceof FormGroup) {
+                  const config: FieldConfig =
+                    fieldFG.controls['fieldConfig'].value;
+                  data[config.key] = fieldFG.controls['fieldControl'].value;
+                }
+              });
+              formData && formData.push(data);
+            }
+          });
+        }
         const outputConfig: NgFormsOutputConfig = {
-          form: this.ngFormGroup,
-          value: this.ngFormGroup?.value,
+          value: formData,
         };
-        // console.log('checking output value', outputConfig.value);
         this.compOutput?.next(outputConfig);
       });
+  }
+
+  /**
+   * Extract by locator for FormArray
+   * @param parentForm
+   * @param locator
+   * @return FormArray
+   */
+  private getFormArrayByLocator(
+    parentForm: FormGroup,
+    locator: string
+  ): FormArray {
+    return parentForm.get(locator.split('.')) as FormArray;
   }
 
   /**

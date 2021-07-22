@@ -40,6 +40,7 @@ export class SharedFilterComponent implements OnInit, AfterViewInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject<void>();
   buttonContext: ActionButtonContext[] = [];
   position: typeof FlexPosition = FlexPosition;
+  outputConfig: SharedFilterOutputConfig | undefined;
   /*** End of Local Variables ***/
 
   /*** List all @Input variables***/
@@ -161,7 +162,10 @@ export class SharedFilterComponent implements OnInit, AfterViewInit, OnDestroy {
         },
         inputChange: new Subject<NgFormsInputConfig>(),
         compOutput: (event: NgFormsOutputConfig): void => {
-          console.log('testing', event);
+          this.outputConfig = {
+            data: event.value,
+          };
+          this.compOutput?.next(this.outputConfig);
         },
       };
     }
@@ -224,9 +228,7 @@ export class SharedFilterComponent implements OnInit, AfterViewInit, OnDestroy {
    * @private
    */
   private applyForm(): void {
-    this.compOutput?.next({
-      data: {},
-    });
+    this.compOutput?.next(this.outputConfig);
   }
 
   /**
@@ -262,9 +264,7 @@ export class SharedFilterComponent implements OnInit, AfterViewInit, OnDestroy {
    * @private
    */
   private saveForm(): void {
-    this.compOutput?.next({
-      data: {},
-    });
+    this.compOutput?.next(this.outputConfig);
   }
 
   /*** End of Private Functions ***/
