@@ -119,7 +119,7 @@ export class AtomGridComponent implements OnInit, AfterViewInit, OnDestroy {
     const displayedColumnsArray = [];
     let nextRow: DcfColumn[];
     // top level of headers (no parent)
-    nextRow = columns.filter((x) => !x.parentFieldId && x.headerText !== null);
+    nextRow = columns.filter((x) => !x.parentFieldId);
     while (nextRow.length) {
       columnArray.push(nextRow);
       displayedColumnsArray.push(nextRow.map((x) => x.fieldName));
@@ -150,9 +150,7 @@ export class AtomGridComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.displayedColumnsArray = displayedColumnsArray;
     this.columnNames = columnArray.reduce((acc, val) => acc.concat(val), []);
-    this.columnNames = this.columnNames.filter(
-      (col) => col.headerText !== null
-    );
+
     this.dataColumns = this.columnNames
       .filter((col) => !col.children?.length)
       .map((col) => col.fieldName);
