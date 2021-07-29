@@ -1,8 +1,0 @@
-<app-shared-filter
-  *ngIf='sharedFilterConfig?.compConfig?.options?.isShow'
-  [compConfig]='sharedFilterConfig?.compConfig'
-  [inputChange]='sharedFilterConfig?.inputChange'
-  (compOutput)='sharedFilterConfig?.compOutput($event)'>
-</app-shared-filter>
-
-<div *ngIf='outputData != null'>{{outputData | json}}</div>

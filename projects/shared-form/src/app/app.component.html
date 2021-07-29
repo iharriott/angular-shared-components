@@ -1,7 +1,0 @@
-<app-shared-forms *ngIf='sharedFormsConfig?.compConfig?.options?.isShow'
-                  [compConfig]='sharedFormsConfig?.compConfig'
-                  [inputChange]='sharedFormsConfig?.inputChange'
-                  (compOutput)='sharedFormsConfig?.compOutput($event)'>
-</app-shared-forms>
-
-<div *ngIf='outputData != null'>{{outputData | json}}</div>
